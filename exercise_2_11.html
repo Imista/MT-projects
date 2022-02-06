@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 2.11</title>
+    <style>
+        .input{
+            display: flex;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        label{
+            /* Box */
+            border: 1px solid black;
+            padding: 8px;
+            margin: 8px;
+            /* Display */
+            display: flex;
+            flex-direction: column;
+            /* Text */
+            text-align: center;
+        }
+        button{
+            padding: 2px;
+            height: 100%;
+        }
+        /* output */
+        .answer{
+            width: 200px;
+            margin: 0 16px;
+            border-radius: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Input -->
+    <div class="input">
+        <label>Investment ($)
+            <input type="number" class="value-p">
+        </label>
+        <label>Number of years
+            <input type="number" class="value-n">
+        </label>
+        <label>Interest (%)
+            <input type="number" class="value-i">
+        </label>
+        <button>Calculate</button>
+    </div>
+    <!-- Output -->
+    <div class="output"></div>
+    <!-- Code -->
+    <script>
+        //Index
+        const index = () => {
+            const inputs = document.querySelectorAll('input');
+            const button = document.querySelector('button');
+            const output = document.querySelector('.output');
+
+            button.addEventListener('click', () => {
+                output.innerHTML = ``;
+                if(isComplete(inputs)){
+                    const p = inputs[0].value;
+                    const n = inputs[1].value;
+                    const i = inputs[2].value/100;
+                    const f = getFutureAmount(p,n,i); 
+
+                    setOutput(output,f);
+                }
+            });
+        }
+        index();
+        //Utils
+        const setOutput = (output, value) => {
+            output.innerHTML = `<h1>Future amount: <b>$${value}</b></h1>`;
+        }
+        const getFutureAmount = (p,n,i) => {
+            return (p*Math.pow((1+i),n));
+        }
+        //Validators
+        const isComplete = (inputs) => {
+            const array = [...inputs]; 
+            return array.every(x => x.value);
+        }
+    </script>
+</body>
+</html>

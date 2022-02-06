@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 2.5</title>
+    <style>
+        .input{
+            display: flex;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        label{
+            /* Box */
+            border: 1px solid black;
+            padding: 8px;
+            margin: 8px;
+            /* Display */
+            display: flex;
+            flex-direction: column;
+            /* Text */
+            text-align: center;
+        }
+        button{
+            padding: 2px;
+            height: 100%;
+        }
+        /* output */
+        .answer{
+            width: 200px;
+            margin: 0 16px;
+            border-radius: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Input -->
+    <div class="input">
+        <label>A
+            <input type="number" class="value-a">
+        </label>
+        <label>B
+            <input type="number" class="value-b">
+        </label>
+        <label>C
+            <input type="number" class="value-c">
+        </label>
+        <button>Calculate</button>
+    </div>
+    <!-- Output -->
+    <div class="output"></div>
+    <!-- Code -->
+    <script>
+        // Index
+        const index = () => {
+            const inputs = document.querySelectorAll('input') || null;
+            const button = document.querySelector('button') || null;
+            const answer = document.querySelector('.output') || null;
+
+            button.addEventListener('click', () => {
+                answer.innerHTML = '';
+                const value = getValue(inputs);
+                if(value){
+                    //Const
+                    const a = value[0];
+                    const b = value[1];
+                    const c = value[2];
+                    //Logic
+                    answerHandler(answer,a,b,c);
+                }
+            })
+        }
+        index();
+        //Utils
+        const getValue = (inputs) => {
+            if(isComplete(inputs)){
+                const values = [];
+                for(let input of inputs){
+                    values.push(input.value);
+                }
+                return values;
+            }else{
+                return null;
+            }
+        }
+        const getRout = (a,b,c) => {
+            return ((b*b)-(4*a*c));
+        }
+        const getCase = (a,b,c) => {
+            const rout = getRout(a,b,c);
+            if(rout > 0){
+                return 2;
+            }else
+            if(rout === 0){
+                return 1;
+            }else
+                return 0;
+        }
+        const getPositiveSolution = (a,b,c) => {
+            const rout = Math.sqrt(getRout(a,b,c));
+            const up = (-b + rout);
+            const down = (2*a);
+            return (up/down);
+        }
+        const getNegativeSolution = (a,b,c) => {
+            const rout = Math.sqrt(getRout(a,b,c));
+            const up = (-b - rout);
+            const down = (2*a);
+            return (up/down);
+        }
+        const getPositiveComplexSolution = (a,b,c) => {
+            const realSolution = (-b/2*a);
+            const rout = Math.sqrt(Math.abs(getRout(a,b,c)));
+            const complexSolution = `${rout/2*a}i`;
+
+            return `${realSolution} + ${complexSolution}`;
+        }
+        const getNegativeComplexSolution = (a,b,c) => {
+            const realSolution = (-b/2*a);
+            const rout = Math.sqrt(Math.abs(getRout(a,b,c)));
+            const complexSolution = `${rout/2*a}i`;
+
+            return `${realSolution} - ${complexSolution}`;
+        }
+        const getView = (res_1,res_2) => (
+            `<div class="answer">
+                <p>x<sub>1</sub> = <b>${res_1}</b></p>
+            </div>
+            <div class="answer">
+                <p>x<sub>2</sub> = <b>${res_2}</b></p>
+            </div>`
+        )
+        const getInvalid = (type = 0) => {
+            if(type === 0){
+                return `<h1>There are no roots in real numbers.</h1>`;
+            }else
+                return `<h1>A must be different than 0.</h1>`;
+        }
+        //Handler
+        const answerHandler = (answer,a,b,c) =>{
+            const numberCase = getCase(a,b,c);
+            let res_1 = 0;
+            let res_2 = 0;
+            
+            switch(numberCase){
+                case 2:
+                    res_1 = getPositiveSolution(a,b,c);
+                    res_2 = getNegativeSolution(a,b,c);
+                    answer.innerHTML = getView(res_1,res_2);
+                    break;
+                case 1:
+                    const res = getPositiveSolution(a,b,c);
+                    answer.innerHTML = getView(res,res);
+                    break;
+                case 0:
+                    res_1 = getPositiveComplexSolution(a,b,c);
+                    res_2 = getNegativeComplexSolution(a,b,c);
+                    answer.innerHTML = getView(res_1,res_2);
+                    break;
+            }
+        }
+        //Validators
+        const isComplete = (inputs) => {
+            const array = [...inputs];
+            if(array[0].value === "" || array[0].value === "0"){
+                const answer = document.querySelector('.output') || null;
+                answer.innerHTML = getInvalid(2);
+                return false;
+            } 
+            return array.every(x => x.value);
+        }
+    </script>
+</body>
+</html>
